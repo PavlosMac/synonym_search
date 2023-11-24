@@ -4,7 +4,7 @@ type ChipInputProps = {
   chips?: string[];
 };
 
-const ChipInput: React.FC<ChipInputProps> = (c?: ChipInputProps) => {
+export const ChipContainer: React.FC<ChipInputProps> = (c?: ChipInputProps) => {
   const [chips, setChips] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
 
@@ -32,11 +32,11 @@ const ChipInput: React.FC<ChipInputProps> = (c?: ChipInputProps) => {
   };
 
   return (
-    <div className="flex flex-wrap bg">
+    <section className="flex flex-wrap bg">
       {chips.map((chip, index) => (
         <div
           key={index}
-          className="bg-blue- text-white px-3 py-1 rounded-full flex items-center justify-between"
+          className="bg-blue text-white px-3 py-1 rounded-full flex items-center justify-between"
         >
           <span>{chip}</span>
           <button
@@ -57,16 +57,7 @@ const ChipInput: React.FC<ChipInputProps> = (c?: ChipInputProps) => {
           </button>
         </div>
       ))}
-      <input
-        type="text"
-        className="flex-1 outline-none w-10 h-5"
-        placeholder="Add a chip"
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-      />
-    </div>
+    </section>
   );
 };
 
-export default ChipInput;

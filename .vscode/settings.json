@@ -1,22 +1,30 @@
 {
-    "eslint.enable": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    },
-    "eslint.validate": [
-      "javascript",
-      "typescript",
-      "typescriptreact"
-    ],
-    "editor.quickSuggestions": {
-      "comments": "on",
-      "strings": "on",
-      "other": "on"
-    },
-    "tailwindCSS.experimental.classRegex": ["tw`([^`]*)", "tw=\"([^\"]*)", "tw={\"([^\"}]*)", "tw\\.\\w+`([^`]*)", "tw\\(.*?\\)`([^`]*)"],
-    "tailwindCSS.includeLanguages": {
-      "typescript": "javascript",
-      "typescriptreact": "javascript"
-    },
-    "tailwindCSS.experimental.configFile": null
+  "eslint.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true,
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.quickSuggestions": {
+    "comments": "on",
+    "strings": "on",
+    "other": "on"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    "tw`([^`]*)",
+    "tw=\"([^\"]*)",
+    "tw={\"([^\"}]*)",
+    "tw\\.\\w+`([^`]*)",
+    "tw\\(.*?\\)`([^`]*)"
+  ],
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "tailwindCSS.experimental.configFile": null,
+  "jest.autoRevealOutput": "off"
 }

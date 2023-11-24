@@ -1,42 +1,55 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { SynonymEventService } from '../services/synonym-service';
 
-export interface IChipsProps {
-    chips: string[];
-}
 
-export default function Chip (c: IChipsProps) {
-    const { chips } = c;
-    // const removeChip = (indexToRemove: number) => {
-    //    const newChips = chips.filter((_, index) => index !== indexToRemove);
-        // setChips(newChips);
-    // };
+export const Chips = () => {
+  const [words, setSynonymWords] = useState<string[]>([]);
+
+  // useEffect(() => {
+  //   const subscription = SynonymEventService.getSynonymsNotification().subscribe((item: SynonymUnit) => {
+  //     // setSynonymWords(item.associated);
+  //   });
+
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   }
+  // }, [])
 
   return (
-    <div>
-          {chips.map((chip: string, index:number) => (
+    <div className="gap-2"> {/* Set a fixed height and allow vertical scrolling */}
+      {words.map((w: string, index: number) => (
         <div
           key={index}
-          className="bg-blue text-white px-3 py-1 rounded-full flex items-center justify-between"
-        >
-          <span>{chip}</span>
-          <button
-            className="ml-1 focus:outline-none"
-            // onClick={() => removeChip(index)}
-          >
+          data-te-chip-init
+          data-te-ripple-init
+          className="[word-wrap: break-word] my-[5px] mr-4 flex h-[32px] cursor-pointer items-center justify-between rounded-[16px] bg-[#eceff1] px-[12px] py-0 text-[13px] font-normal normal-case leading-loose text-[#4f4f4f] shadow-none transition-[opacity] duration-300 ease-linear hover:!shadow-none active:bg-[#cacfd1] dark:bg-neutral-600 dark:text-neutral-200">
+
+          John Doe
+          <span
+            data-te-chip-close
+            className="float-right w-4 cursor-pointer pl-[8px] text-[16px] text-[#afafaf] opacity-[.53] transition-all duration-200 ease-in-out hover:text-[#8b8b8b] dark:text-neutral-400 dark:hover:text-neutral-100">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="h-3 w-3">
               <path
-                fillRule="evenodd"
-                d="M10 1a9 9 0 0 1 9 9c0 4.963-4.037 9-9 9-4.963 0-9-4.037-9-9a9 9 0 0 1 9-9zM5.293 5.293a1 1 0 0 1 1.414-1.414L10 8.586l3.293-3.293a1 1 0 0 1 1.414 1.414L11.414 10l3.293 3.293a1 1 0 0 1-1.414 1.414L10 11.414l-3.293 3.293a1 1 0 0 1-1.414-1.414L8.586 10 5.293 6.707a1 1 0 0 1 0-1.414z"
-              />
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </span>
         </div>
       ))}
     </div>
   );
 }
+
+{/* <span
+key={index}
+className="inline-block m-1 whitespace-nowrap rounded-full bg-info-100 px-[0.65em] pb-[0.25em] pt-[0.35em] text-center align-baseline text-[0.75em] font-bold leading-none text-info-800">
+{w}
+</span> */}
