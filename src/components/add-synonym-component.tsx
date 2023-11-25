@@ -1,39 +1,28 @@
 import * as React from 'react';
-// import ChipInput from './chip-container';
 // Initialization for ES Users
 import { TERipple } from 'tw-elements-react';
-import { useEffect, useState } from 'react';
-import { BehaviorSubject, Subject, catchError, debounceTime, distinctUntilChanged, filter, from, of, takeUntil, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, debounceTime, distinctUntilChanged, of, takeUntil, tap } from 'rxjs';
 import axios, { AxiosResponse } from 'axios';
+import { useEffect, useState } from 'react';
 import { SynonymEventService } from '../services/synonym-service';
-import { SynonymUnit } from '../types/synonym';
 
 const grouping$ = new BehaviorSubject<boolean>(false);
 
 export function AddSynonymContainer() {
     const [word, setWord] = useState('');
-    const [newSynonym$] = useState(() => new Subject<string>());
-
-    useEffect(() => {
-        // newSynonym$
-        //     .asObservable()
-        //     .pipe(
-        //         debounceTime(1000), distinctUntilChanged(),
-        //         tap((word: string) => {
-        //             console.log('doununced word ', word)
-        //             if (!grouping$.getValue()) {
-        //                 SynonymEventService.setSynonyms({ ...SynonymEventService.getSynonyms(), canonicalForm: word });
-        //             }
-        //             return of(word);
-        //         }),
-        //     ).subscribe()
-    });
+    const destory$ = new Subject<void>();
 
     const createNewAssociation = async (): Promise<AxiosResponse<void>> => {
-        console.log(SynonymEventService.getSynonyms())
         const { canonicalForm, associated } = SynonymEventService.getSynonyms();
         return axios.post<void>('http://localhost:4000/api/synonym/new', { canonicalForm, associated: Array.from(associated) });
     };
+
+    useEffect(() => {
+        return () => {
+            destory$.next();
+            destory$.complete();
+        }
+    }, []);
 
     //handlChange event handler with dom event type will be used to get the value of the input and setWord
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +30,7 @@ export function AddSynonymContainer() {
         setWord(evt.target.value);
         of(evt.target.value.trim())
             .pipe(
+                takeUntil(destory$),
                 debounceTime(1000), distinctUntilChanged(),
                 tap((word: string) => {
                     console.log('doununced word ', word)
@@ -62,9 +52,6 @@ export function AddSynonymContainer() {
                     ...sysonymUnit,
                     associated: new Set([...sysonymUnit.associated, term])
                 });
-                // if (sysonymUnit.canonicalForm && Array.from(sysonymUnit.associated).length > 0) {
-                //     grouping$.next(true);
-                // }
             }
             grouping$.next(true);
             setWord('');

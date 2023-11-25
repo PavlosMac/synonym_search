@@ -8,7 +8,7 @@ export const CanonicalKeyword = () => {
     const [canonical, setCanonical] = useState<string>('')
 
     useEffect(() => {
-        const subscription = SynonymEventService.getSynonymsNotification().subscribe((item: SynonymUnit) => {
+        const subscription = SynonymEventService.getSynonym$().subscribe((item: SynonymUnit) => {
             setCanonical(item.canonicalForm);
         });
 

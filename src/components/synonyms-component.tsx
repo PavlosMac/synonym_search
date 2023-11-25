@@ -7,7 +7,7 @@ export const SynonymsComponent = () => {
     const [words, setSynonymWords] = useState<Set<string>>(new Set())
 
     useEffect(() => {
-        const subscription = SynonymEventService.getSynonymsNotification().subscribe((item: SynonymUnit) => {
+        const subscription = SynonymEventService.getSynonym$().subscribe((item: SynonymUnit) => {
             setSynonymWords(item.associated);
         });
 

@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { SynonymUnit } from '../types/synonym';
 
 const synonymn = new BehaviorSubject<SynonymUnit>({ canonicalForm: '', associated: new Set([]) });
@@ -10,5 +10,5 @@ export const SynonymEventService = {
     setNewAssociation: (word: string) => newSynonym.next(word),
     getNewSynonyms: () => newSynonym.getValue(),
     getNewAssociationAsync: () => newSynonym.asObservable(),
-    getSynonymsNotification: () => synonymn.asObservable(),
+    getSynonym$: () => synonymn.asObservable(),
 };

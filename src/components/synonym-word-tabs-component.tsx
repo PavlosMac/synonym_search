@@ -8,7 +8,6 @@ import {
 import { SynonymEventService } from '../services/synonym-service';
 import { CanonicalKeyword } from './canonical-keyword-component';
 import { SearchContainer } from './search-input-component';
-import { Chips } from './chips-component';
 import { SynonymsComponent } from './synonyms-component';
 import { AddSynonymContainer } from './add-synonym-component';
 
@@ -69,18 +68,3 @@ export default function SynonymWordTabs(): JSX.Element {
         </div >
     );
 }
-
-
-{/* <div className="flex flex-col w-60 h-14 max-w-md p-4">
-<div className="grid grid-rows-4 grid-flow-col h-32 w-100 gap-4">
-  <div className="flex-nowrap items-center">
-    <CanonicalKeyword />
-  </div>
-  <div className="flex-nowrap items-center">
-    <SearchContainer />
-  </div>
-  <div className="flex-wrap gap-4 mt-4 h-32 w-100">
-    <Chips />
-  </div>
-</div>
-</div> */}

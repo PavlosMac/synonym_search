@@ -1,33 +1,36 @@
 
 import * as React from 'react';
-// import ChipInput from './chip-container';
-// Initialization for ES Users
+import { useDebouncedCallback } from 'use-debounce';
 import { TERipple } from 'tw-elements-react';
 import { useEffect, useState } from 'react';
-import { Subject, debounceTime, distinctUntilChanged, from, interval, map, of, switchMap, tap, throttle } from 'rxjs';
+import { Subject, map, distinctUntilChanged, from, filter, switchMap, takeUntil } from 'rxjs';
 import axios from 'axios';
-import { SynonymEventService } from '../services/synonym-service';
 import { SynonymUnit } from '../types/synonym';
+import { SynonymEventService } from '../services/synonym-service';
 
 export function SearchContainer() {
   const [searchText, setSearchText] = useState('');
-  const [onSearch$] = useState(() => new Subject<string>());
+  const destory$ = new Subject<void>();
 
   useEffect(() => {
-    onSearch$
+    SynonymEventService.getSynonym$()
       .pipe(
-        throttle(() => interval(500)),
+        takeUntil(destory$),
+        map((synonymUnit: SynonymUnit) => synonymUnit.canonicalForm),
+        filter((t: string) => t.length > 1),
         distinctUntilChanged(),
-        tap((term: string) => {
-          SynonymEventService.setSynonyms({ canonicalForm: term, associated: new Set([]) });
-        }),
         switchMap((search: string) => {
           console.log(search)
           return from(getSearchTermSynonyms(search.trim()));
         })).subscribe((synonyms: SynonymUnit) => {
-          const { canonicalForm, associated } = synonyms;
-          SynonymEventService.setSynonyms({ canonicalForm, associated: associated ?? [] });
+          const { associated } = synonyms;
+          SynonymEventService.setSynonyms({ ...SynonymEventService.getSynonyms(), associated: associated ?? [] });
         });
+
+    return () => {
+      destory$.next();
+      destory$.complete();
+    }
   }, []);
 
   // get the search term results using API
@@ -36,10 +39,17 @@ export function SearchContainer() {
     return res.data;
   };
 
-  const handleChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    const search = (e.target.value as string).trim();
-    setSearchText(search);
-    onSearch$.next(search as string);
+  const debounced = useDebouncedCallback(
+    // function
+    (value) => {
+      setSearchText(value);
+      changeCanonical(value)
+    },
+    100
+  );
+
+  const changeCanonical = (searchTerm: string) => {
+    SynonymEventService.setSynonyms({ ...SynonymEventService.getSynonyms(), canonicalForm: searchTerm });
   }
 
   return (
@@ -52,8 +62,7 @@ export function SearchContainer() {
           aria-label="Search"
           aria-describedby="button-addon1"
           value={searchText}
-          onChange={handleChange}
-        // onKeyDown={handleKeyDown}
+          onChange={(e) => { debounced(e.target.value); }}
         />
 
         {/* <!--Search button--> */}
