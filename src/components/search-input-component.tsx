@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { TERipple } from 'tw-elements-react';
 import { useEffect, useState } from 'react';
-import { Subject, map, distinctUntilChanged, from, filter, switchMap, takeUntil } from 'rxjs';
+import { Subject, map, distinctUntilChanged, from, filter, switchMap, takeUntil, debounceTime, throttleTime } from 'rxjs';
 import axios from 'axios';
 import { SynonymUnit } from '../types/synonym';
 import { SynonymEventService } from '../services/synonym-service';
@@ -17,7 +17,7 @@ export function SearchContainer() {
       .pipe(
         takeUntil(destory$),
         map((synonymUnit: SynonymUnit) => synonymUnit.canonicalForm),
-        filter((t: string) => t.length > 1),
+        filter((term: string) => term.length > 1),
         distinctUntilChanged(),
         switchMap((search: string) => {
           console.log(search)
@@ -39,13 +39,16 @@ export function SearchContainer() {
     return res.data;
   };
 
+  const setFieldValue = (v: string) => {
+    setSearchText(v);
+  }
+
   const debounced = useDebouncedCallback(
     // function
     (value) => {
-      setSearchText(value);
       changeCanonical(value)
     },
-    100
+    400
   );
 
   const changeCanonical = (searchTerm: string) => {
@@ -62,27 +65,8 @@ export function SearchContainer() {
           aria-label="Search"
           aria-describedby="button-addon1"
           value={searchText}
-          onChange={(e) => { debounced(e.target.value); }}
+          onChange={(e) => { debounced(e.target.value); setFieldValue(e.target.value) }}
         />
-
-        {/* <!--Search button--> */}
-        <TERipple color="light">
-          <button
-            className="relative z-[2] flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
-            type="button"
-            id="button-addon1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="h-5 w-5">
-              <path
-                fillRule="evenodd"
-                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                clipRule="evenodd" />
-            </svg>
-          </button>
-        </TERipple>
       </div>
     </div>
   );
