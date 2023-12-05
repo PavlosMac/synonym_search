@@ -7,6 +7,7 @@ import { Subject, map, distinctUntilChanged, from, filter, switchMap, takeUntil,
 import axios from 'axios';
 import { SynonymUnit } from '../types/synonym';
 import { SynonymEventService } from '../services/synonym-service';
+import { BASE_URI } from '../config';
 
 export function SearchContainer() {
   const [searchText, setSearchText] = useState('');
@@ -35,7 +36,7 @@ export function SearchContainer() {
 
   // get the search term results using API
   const getSearchTermSynonyms = async (search: string) => {
-    const res = await axios.get<SynonymUnit>(`http://localhost:4000/api/synonyms?term=${search}`);
+    const res = await axios.get<SynonymUnit>(`${BASE_URI}/api/synonyms?term=${search}`);
     return res.data;
   };
 

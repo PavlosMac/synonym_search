@@ -5,6 +5,7 @@ import axios, { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { SynonymEventService } from '../services/synonym-service';
 import { SynonymUnit } from '../types/synonym';
+import { BASE_URI } from '../config';
 
 export function AddSynonymContainer() {
     const [word, setWord] = useState('');
@@ -14,7 +15,7 @@ export function AddSynonymContainer() {
 
     const createNewAssociation = async (): Promise<void> => {
         const { canonicalForm, associated } = SynonymEventService.getSynonyms();
-        const response = await axios.post<{ canonicalForm: string, associated: string[] }>('http://localhost:4000/api/synonym/new', { canonicalForm, associated: Array.from(associated) });
+        const response = await axios.post<{ canonicalForm: string, associated: string[] }>(`${BASE_URI}/api/synonym/new`, { canonicalForm, associated: Array.from(associated) });
         if (response.status === 201) {
             setWord(response.data.canonicalForm);
             setOthers(response.data.associated.join(', '));
